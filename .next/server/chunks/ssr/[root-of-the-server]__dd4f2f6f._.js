@@ -1,0 +1,3 @@
+module.exports=[93695,(a,b,c)=>{b.exports=a.x("next/dist/shared/lib/no-fallback-error.external.js",()=>require("next/dist/shared/lib/no-fallback-error.external.js"))},49901,(a,b,c)=>{},50708,a=>{"use strict";a.s(["default",()=>c]);var b=a.i(7997);function c(){return(0,b.jsx)("div",{style:{padding:24},children:(0,b.jsx)("h1",{children:"Ryan Moshi Portfolio"})})}}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__dd4f2f6f._.js.map
