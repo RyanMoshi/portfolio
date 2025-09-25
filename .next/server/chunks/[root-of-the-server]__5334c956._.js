@@ -162,6 +162,11 @@ const SMTP_PASS = process.env.SMTP_PASS || "";
 const FROM_EMAIL = process.env.MAIL_FROM || "Ryan Moshi <noreply@your-domain.com>";
 async function sendEmail(to, subject, html) {
     if (!SMTP_USER || !SMTP_PASS) {
+        console.error("SMTP Configuration Check:");
+        console.error("SMTP_USER:", SMTP_USER ? "Set" : "Missing");
+        console.error("SMTP_PASS:", SMTP_PASS ? "Set" : "Missing");
+        console.error("SMTP_HOST:", SMTP_HOST);
+        console.error("SMTP_PORT:", SMTP_PORT);
         throw new Error("SMTP not configured. Set SMTP_USER and SMTP_PASS in .env.local");
     }
     const transporter = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$nodemailer$2f$lib$2f$nodemailer$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].createTransport({
@@ -171,6 +176,9 @@ async function sendEmail(to, subject, html) {
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASS
+        },
+        tls: {
+            rejectUnauthorized: false // Allow self-signed certificates
         }
     });
     await transporter.sendMail({
@@ -248,25 +256,55 @@ function renderOwnerTemplate(payload) {
 }
 async function POST(req) {
     try {
+        // Debug environment variables
+        console.log("Environment Variables Debug:");
+        console.log("SMTP_USER:", process.env.SMTP_USER ? "Set" : "Missing");
+        console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Set" : "Missing");
+        console.log("SMTP_HOST:", process.env.SMTP_HOST);
+        console.log("SMTP_PORT:", process.env.SMTP_PORT);
+        console.log("MAIL_FROM:", process.env.MAIL_FROM);
         const data = await req.json();
-        const { name, email } = data;
-        if (!name || !email) {
+        const { name, email, projectName, projectType, budget, timeline, description, source } = data;
+        // Enhanced validation
+        if (!name || !email || !projectName || !projectType || !description) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Missing required fields"
+                error: "Missing required fields. Please fill in all required fields."
             }, {
                 status: 400
             });
         }
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Please provide a valid email address."
+            }, {
+                status: 400
+            });
+        }
+        // Prepare enhanced data for email templates
+        const enhancedData = {
+            name: name.trim(),
+            email: email.trim(),
+            projectName: projectName.trim(),
+            projectType: projectType,
+            budget: budget ? `$${Number(budget).toLocaleString()}` : 'Not specified',
+            timeline: timeline ? `${timeline} months` : 'Not specified',
+            description: description.trim(),
+            source: source || 'Not specified',
+            submittedAt: new Date().toLocaleString()
+        };
         await Promise.all([
             sendEmail(email, "Thanks for reaching out to Ryan Moshi", renderUserTemplate(name)),
-            sendEmail(NOTIFY_EMAIL, "New Portfolio Contact Submission", renderOwnerTemplate(data))
+            sendEmail(NOTIFY_EMAIL, "New Project Inquiry - Portfolio Contact", renderOwnerTemplate(enhancedData))
         ]);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             ok: true
         });
     } catch (err) {
+        console.error('Contact form error:', err);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: err?.message || "Unknown error"
+            error: err?.message || "Failed to send message. Please try again later."
         }, {
             status: 500
         });
