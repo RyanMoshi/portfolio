@@ -507,9 +507,11 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-2 hover:border-red-200">
-                      <CardContent className="p-6">
+                      <CardContent className="">
                         <div className="text-red-600 mb-4">{service.icon}</div>
-                        <h3 className="text-xl font-bold text-black mb-4">{service.title}</h3>
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="text-xl font-bold text-black leading-tight">{service.title}</h3>
+                        </div>
                         <ul className="space-y-2">
                           {service.services.map((item, i) => (
                             <li key={i} className="text-gray-600 text-sm">{item}</li>
@@ -570,11 +572,11 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-all duration-300 group cursor-pointer border-2 hover:border-red-200">
-                      <CardContent className="p-6">
+                      <CardContent className="">
                         <div className="w-20 h-20 mb-4 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
                           <Image src={project.image} alt={project.title} width={64} height={64} className="object-contain" />
                         </div>
-                        <h3 className="text-xl font-bold text-black mb-2">{project.title}</h3>
+                        <h3 className="text-xl font-bold text-black leading-tight mb-2">{project.title}</h3>
                         <p className="text-red-600 font-medium mb-3">{project.subtitle}</p>
                         <p className="text-gray-600 text-sm leading-relaxed mb-4">{project.description}</p>
                         <div className="flex items-center justify-between">
@@ -716,9 +718,9 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full border-2 hover:border-red-200 transition-all duration-300">
-                      <CardContent className="p-6">
+                      <CardContent className="">
                         <GraduationCap className="h-8 w-8 text-red-600 mb-4" />
-                        <h3 className="text-xl font-bold text-black mb-2">{edu.degree}</h3>
+                        <h3 className="text-xl font-bold text-black leading-tight mb-2">{edu.degree}</h3>
                         <p className="text-lg text-red-600 font-medium mb-2">{edu.school}</p>
                         <p className="text-gray-600 mb-3">{edu.year}</p>
                         <p className="text-gray-700 text-sm">{edu.focus}</p>
@@ -776,10 +778,10 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full border-2 hover:border-red-200 transition-all duration-300">
-                      <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                          <div className="text-red-600 mr-3">{skillGroup.icon}</div>
-                          <h3 className="text-lg font-bold text-black">{skillGroup.category}</h3>
+                      <CardContent className="">
+                        <div className="flex items-center mb-3">
+                          <div className="text-red-600 mr-3 flex items-center">{skillGroup.icon}</div>
+                          <h3 className="text-lg font-bold text-black leading-tight">{skillGroup.category}</h3>
                         </div>
                         <div className="space-y-2">
                           {skillGroup.skills.map((skill, i) => (
@@ -894,7 +896,7 @@ export default function Portfolio() {
                   viewport={{ once: true }}
                 >
                   <Card className="bg-gray-900 border-gray-800">
-                    <CardContent className="p-6">
+                    <CardContent className="">
                       {!formSubmitted ? (
                         <>
                           <h3 className="text-2xl font-bold text-white mb-6">Start Your Project</h3>
