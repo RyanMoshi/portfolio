@@ -204,10 +204,13 @@ const Navigation = () => {
 export default function Portfolio() {
   const [showLoader, setShowLoader] = useState(true)
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
+    projectName: '',
     projectType: '',
     budget: '',
     timeline: '',
@@ -217,35 +220,108 @@ export default function Portfolio() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+    // Clear error when user starts typing
+    if (formErrors[field]) {
+      setFormErrors(prev => ({ ...prev, [field]: '' }))
+    }
+    // Clear submit error when user makes changes
+    if (submitError) {
+      setSubmitError('')
+    }
+  }
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {}
+    
+    // Required field validation
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required'
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address'
+    }
+    
+    if (!formData.projectName.trim()) {
+      errors.projectName = 'Project name is required'
+    }
+    
+    if (!formData.projectType) {
+      errors.projectType = 'Project type is required'
+    }
+    
+    if (!formData.description.trim()) {
+      errors.description = 'Project description is required'
+    }
+    
+    // Optional field validation
+    if (formData.budget && isNaN(Number(formData.budget))) {
+      errors.budget = 'Budget must be a valid number'
+    }
+    
+    if (formData.timeline && (isNaN(Number(formData.timeline)) || Number(formData.timeline) < 1)) {
+      errors.timeline = 'Timeline must be a valid number of months (minimum 1)'
+    }
+    
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Clear previous errors
+    setSubmitError('')
+    setFormErrors({})
+    
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
+    
+    setIsSubmitting(true)
+    
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
+      
       let payload: any = null
-      try { payload = await res.json() } catch {}
-      if (!res.ok && !(payload && payload.ok)) {
-        throw new Error((payload && payload.error) || 'Submission failed')
+      try { 
+        payload = await res.json() 
+      } catch {
+        throw new Error('Invalid response from server')
       }
+      
+      if (!res.ok || !payload?.ok) {
+        throw new Error(payload?.error || 'Submission failed. Please try again.')
+      }
+      
+      // Success - show confirmation and clear form
       setFormSubmitted(true)
-      setTimeout(() => setFormSubmitted(false), 6000)
       setFormData({
         name: '',
         email: '',
-        company: '',
+        projectName: '',
         projectType: '',
         budget: '',
         timeline: '',
         description: '',
         source: ''
       })
-    } catch (error) {
+      
+      // Auto-hide success message after 8 seconds
+      setTimeout(() => setFormSubmitted(false), 8000)
+      
+    } catch (error: any) {
       console.error('Form submission error:', error)
+      setSubmitError(error.message || 'Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -904,67 +980,87 @@ export default function Portfolio() {
                           <h3 className="text-2xl font-bold text-white mb-6">Start Your Project</h3>
                           <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <Input
-                                placeholder="Full Name"
-                                value={formData.name}
-                                onChange={(e) => handleInputChange('name', e.target.value)}
-                                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-                                required
-                              />
-                              <Input
-                                type="email"
-                                placeholder="Email Address"
-                                value={formData.email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-                                required
-                              />
+                              <div>
+                                <Input
+                                  placeholder="Full Name"
+                                  value={formData.name}
+                                  onChange={(e) => handleInputChange('name', e.target.value)}
+                                  className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 ${formErrors.name ? 'border-red-500' : ''}`}
+                                />
+                                {formErrors.name && <p className="text-red-400 text-sm mt-1">{formErrors.name}</p>}
+                              </div>
+                              <div>
+                                <Input
+                                  type="email"
+                                  placeholder="Email Address"
+                                  value={formData.email}
+                                  onChange={(e) => handleInputChange('email', e.target.value)}
+                                  className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 ${formErrors.email ? 'border-red-500' : ''}`}
+                                />
+                                {formErrors.email && <p className="text-red-400 text-sm mt-1">{formErrors.email}</p>}
+                              </div>
                             </div>
                             
-                            <Input
-                              placeholder="Company/Organization"
-                              value={formData.company}
-                              onChange={(e) => handleInputChange('company', e.target.value)}
-                              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-                            />
+                            <div>
+                              <Input
+                                placeholder="Project Name"
+                                value={formData.projectName}
+                                onChange={(e) => handleInputChange('projectName', e.target.value)}
+                                className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 ${formErrors.projectName ? 'border-red-500' : ''}`}
+                              />
+                              {formErrors.projectName && <p className="text-red-400 text-sm mt-1">{formErrors.projectName}</p>}
+                            </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <Select onValueChange={(value) => handleInputChange('projectType', value)}>
-                                <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                                  <SelectValue placeholder="Project Type" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-gray-800 border-gray-700">
-                                  <SelectItem value="brand-strategy" className="text-white hover:bg-gray-700">Brand Strategy</SelectItem>
-                                  <SelectItem value="web-development" className="text-white hover:bg-gray-700">Web Development</SelectItem>
-                                  <SelectItem value="mobile-app" className="text-white hover:bg-gray-700">Mobile App</SelectItem>
-                                  <SelectItem value="digital-transformation" className="text-white hover:bg-gray-700">Full Digital Transformation</SelectItem>
-                                  <SelectItem value="other" className="text-white hover:bg-gray-700">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <div>
+                                <Select onValueChange={(value) => handleInputChange('projectType', value)}>
+                                  <SelectTrigger className={`bg-gray-800 border-gray-700 text-white ${formErrors.projectType ? 'border-red-500' : ''}`}>
+                                    <SelectValue placeholder="Project Type" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-gray-800 border-gray-700">
+                                    <SelectItem value="brand-strategy" className="text-white hover:bg-gray-700">Brand Strategy</SelectItem>
+                                    <SelectItem value="web-development" className="text-white hover:bg-gray-700">Web Development</SelectItem>
+                                    <SelectItem value="mobile-app" className="text-white hover:bg-gray-700">Mobile App</SelectItem>
+                                    <SelectItem value="digital-transformation" className="text-white hover:bg-gray-700">Full Digital Transformation</SelectItem>
+                                    <SelectItem value="other" className="text-white hover:bg-gray-700">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                {formErrors.projectType && <p className="text-red-400 text-sm mt-1">{formErrors.projectType}</p>}
+                              </div>
                               
-                              {/* Custom Budget Field */}
-                              <Input
-                                placeholder="Enter your estimated budget (e.g., $500 - $1500)"
-                                value={formData.budget}
-                                onChange={(e) => handleInputChange('budget', e.target.value)}
-                                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-                              />
+                              <div>
+                                <Input
+                                  type="number"
+                                  placeholder="Budget (USD)"
+                                  value={formData.budget}
+                                  onChange={(e) => handleInputChange('budget', e.target.value)}
+                                  className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 ${formErrors.budget ? 'border-red-500' : ''}`}
+                                />
+                                {formErrors.budget && <p className="text-red-400 text-sm mt-1">{formErrors.budget}</p>}
+                              </div>
                             </div>
                             
-                            <Input
-                              placeholder="Project Timeline"
-                              value={formData.timeline}
-                              onChange={(e) => handleInputChange('timeline', e.target.value)}
-                              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-                            />
+                            <div>
+                              <Input
+                                type="number"
+                                placeholder="Timeline (months)"
+                                value={formData.timeline}
+                                onChange={(e) => handleInputChange('timeline', e.target.value)}
+                                className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 ${formErrors.timeline ? 'border-red-500' : ''}`}
+                                min="1"
+                              />
+                              {formErrors.timeline && <p className="text-red-400 text-sm mt-1">{formErrors.timeline}</p>}
+                            </div>
                             
-                            <Textarea
-                              placeholder="Tell me about your project..."
-                              value={formData.description}
-                              onChange={(e) => handleInputChange('description', e.target.value)}
-                              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 min-h-[120px]"
-                              required
-                            />
+                            <div>
+                              <Textarea
+                                placeholder="Tell me about your project..."
+                                value={formData.description}
+                                onChange={(e) => handleInputChange('description', e.target.value)}
+                                className={`bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 min-h-[120px] ${formErrors.description ? 'border-red-500' : ''}`}
+                              />
+                              {formErrors.description && <p className="text-red-400 text-sm mt-1">{formErrors.description}</p>}
+                            </div>
                             
                             <Select onValueChange={(value) => handleInputChange('source', value)}>
                               <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
@@ -979,25 +1075,50 @@ export default function Portfolio() {
                               </SelectContent>
                             </Select>
                             
+                            {submitError && (
+                              <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3">
+                                <p className="text-red-400 text-sm">{submitError}</p>
+                              </div>
+                            )}
+                            
                             <Button 
                               type="submit" 
-                              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 transition-all duration-300 hover:shadow-lg hover:shadow-red-600/25"
+                              disabled={isSubmitting}
+                              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed text-white font-medium py-3 transition-all duration-300 hover:shadow-lg hover:shadow-red-600/25"
                             >
-                              <Send className="mr-2 h-4 w-4" />
-                              Send Project Inquiry
+                              {isSubmitting ? (
+                                <>
+                                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                  Sending...
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="mr-2 h-4 w-4" />
+                                  Send Project Inquiry
+                                </>
+                              )}
                             </Button>
                           </form>
                         </>
                       ) : (
                         <div className="text-center py-8">
                           <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                          <h3 className="text-2xl font-bold text-white mb-4">Thank You!</h3>
+                          <h3 className="text-2xl font-bold text-white mb-4">
+                            Thanks, {formData.name || 'there'}!
+                          </h3>
                           <p className="text-gray-300 mb-4">
                             Your project inquiry has been received successfully.
                           </p>
-                          <p className="text-gray-400 text-sm">
+                          <p className="text-gray-400 text-sm mb-6">
                             I'll review your request and get back to you within 24-48 hours with next steps.
                           </p>
+                          <Button 
+                            onClick={() => setFormSubmitted(false)}
+                            variant="outline"
+                            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                          >
+                            Send Another Inquiry
+                          </Button>
                         </div>
                       )}
                     </CardContent>

@@ -99,20 +99,47 @@ function renderOwnerTemplate(payload: any) {
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    const { name, email } = data;
+    const { name, email, projectName, projectType, budget, timeline, description, source } = data;
 
-    if (!name || !email) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Enhanced validation
+    if (!name || !email || !projectName || !projectType || !description) {
+      return NextResponse.json({ 
+        error: "Missing required fields. Please fill in all required fields." 
+      }, { status: 400 });
     }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ 
+        error: "Please provide a valid email address." 
+      }, { status: 400 });
+    }
+
+    // Prepare enhanced data for email templates
+    const enhancedData = {
+      name: name.trim(),
+      email: email.trim(),
+      projectName: projectName.trim(),
+      projectType: projectType,
+      budget: budget ? `$${Number(budget).toLocaleString()}` : 'Not specified',
+      timeline: timeline ? `${timeline} months` : 'Not specified',
+      description: description.trim(),
+      source: source || 'Not specified',
+      submittedAt: new Date().toLocaleString()
+    };
 
     await Promise.all([
       sendEmail(email, "Thanks for reaching out to Ryan Moshi", renderUserTemplate(name)),
-      sendEmail(NOTIFY_EMAIL, "New Portfolio Contact Submission", renderOwnerTemplate(data)),
+      sendEmail(NOTIFY_EMAIL, "New Project Inquiry - Portfolio Contact", renderOwnerTemplate(enhancedData)),
     ]);
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || "Unknown error" }, { status: 500 });
+    console.error('Contact form error:', err);
+    return NextResponse.json({ 
+      error: err?.message || "Failed to send message. Please try again later." 
+    }, { status: 500 });
   }
 }
 
