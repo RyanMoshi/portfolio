@@ -463,7 +463,7 @@ export default function Portfolio() {
 
           {/* Services Section */}
           <section id="services" className="py-20 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="desktop-container">
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -476,7 +476,7 @@ export default function Portfolio() {
                 </h2>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="desktop-grid-4">
                 {[
                   {
                     icon: <TrendingUp className="h-8 w-8" />,
@@ -507,14 +507,14 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-red-200">
-                      <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                          <div className="text-red-600 mr-3 flex items-center">{service.icon}</div>
-                          <h3 className="card-title text-xl font-bold text-black leading-tight">{service.title}</h3>
+                      <CardContent className="card-spacing">
+                        <div className="baseline-align-top card-internal-spacing">
+                          <div className="text-red-600 mr-3 flex items-center card-icon">{service.icon}</div>
+                          <h3 className="card-title title-wrap-control text-xl font-bold text-black leading-tight">{service.title}</h3>
                         </div>
                         <ul className="card-list space-y-2">
                           {service.services.map((item, i) => (
-                            <li key={i} className="text-gray-600 text-sm leading-relaxed">{item}</li>
+                            <li key={i} className="card-body text-gray-600 text-sm leading-relaxed">{item}</li>
                           ))}
                         </ul>
                       </CardContent>
@@ -527,7 +527,7 @@ export default function Portfolio() {
 
           {/* Portfolio Section */}
           <section id="portfolio" className="py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="desktop-container">
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -540,7 +540,7 @@ export default function Portfolio() {
                 </h2>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="desktop-grid-3">
                 {[
                   {
                     title: "The RetroWorld Studios",
@@ -572,13 +572,13 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-all duration-300 group cursor-pointer border-2 hover:border-red-200">
-                      <CardContent className="p-6">
-                        <div className="w-20 h-20 mb-4 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
+                      <CardContent className="card-spacing">
+                        <div className="w-20 h-20 card-internal-spacing rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
                           <Image src={project.image} alt={project.title} width={64} height={64} className="object-contain" />
                         </div>
-                        <h3 className="card-title text-xl font-bold text-black leading-tight mb-2">{project.title}</h3>
-                        <p className="text-red-600 font-medium mb-3">{project.subtitle}</p>
-                        <p className="text-gray-600 text-sm leading-relaxed mb-4">{project.description}</p>
+                        <h3 className="card-title title-wrap-control text-xl font-bold text-black leading-tight card-internal-spacing-sm">{project.title}</h3>
+                        <p className="card-subtitle text-red-600 font-medium card-internal-spacing-sm">{project.subtitle}</p>
+                        <p className="card-body text-gray-600 text-sm leading-relaxed card-internal-spacing">{project.description}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center text-red-600 group-hover:text-red-700 transition-colors">
                             <span className="text-sm font-medium">View Project</span>
@@ -682,7 +682,7 @@ export default function Portfolio() {
 
           {/* Education Section */}
           <section className="py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="desktop-container">
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -695,7 +695,7 @@ export default function Portfolio() {
                 </h2>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="desktop-grid-2">
                 {[
                   {
                     degree: "Bachelor's in Business & Information Technology",
@@ -718,14 +718,14 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-red-200">
-                      <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                          <GraduationCap className="h-8 w-8 text-red-600 mr-3 flex items-center" />
-                          <h3 className="card-title text-xl font-bold text-black leading-tight">{edu.degree}</h3>
+                      <CardContent className="card-spacing">
+                        <div className="baseline-align-top card-internal-spacing">
+                          <GraduationCap className="h-8 w-8 text-red-600 mr-3 flex items-center card-icon" />
+                          <h3 className="card-title title-wrap-control text-xl font-bold text-black leading-tight">{edu.degree}</h3>
                         </div>
-                        <p className="text-lg text-red-600 font-medium mb-2">{edu.school}</p>
-                        <p className="text-gray-600 mb-3">{edu.year}</p>
-                        <p className="text-gray-700 text-sm leading-relaxed">{edu.focus}</p>
+                        <p className="card-subtitle text-lg text-red-600 font-medium card-internal-spacing-sm">{edu.school}</p>
+                        <p className="card-body text-gray-600 card-internal-spacing-sm">{edu.year}</p>
+                        <p className="card-body text-gray-700 text-sm leading-relaxed">{edu.focus}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -736,7 +736,7 @@ export default function Portfolio() {
 
           {/* Skills Section */}
           <section className="py-20 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="desktop-container">
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -749,7 +749,7 @@ export default function Portfolio() {
                 </h2>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="desktop-grid-4">
                 {[
                   {
                     category: "Tech & Development",
@@ -780,10 +780,10 @@ export default function Portfolio() {
                     viewport={{ once: true }}
                   >
                     <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-red-200">
-                      <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                          <div className="text-red-600 mr-3 flex items-center">{skillGroup.icon}</div>
-                          <h3 className="card-title text-xl font-bold text-black leading-tight">{skillGroup.category}</h3>
+                      <CardContent className="card-spacing">
+                        <div className="baseline-align-top card-internal-spacing">
+                          <div className="text-red-600 mr-3 flex items-center card-icon">{skillGroup.icon}</div>
+                          <h3 className="card-title title-wrap-control text-xl font-bold text-black leading-tight">{skillGroup.category}</h3>
                         </div>
                         <div className="space-y-2">
                           {skillGroup.skills.map((skill, i) => (
