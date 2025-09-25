@@ -106,6 +106,14 @@ function renderOwnerTemplate(payload: any) {
 
 export async function POST(req: Request) {
   try {
+    // Debug environment variables
+    console.log("Environment Variables Debug:");
+    console.log("SMTP_USER:", process.env.SMTP_USER ? "Set" : "Missing");
+    console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Set" : "Missing");
+    console.log("SMTP_HOST:", process.env.SMTP_HOST);
+    console.log("SMTP_PORT:", process.env.SMTP_PORT);
+    console.log("MAIL_FROM:", process.env.MAIL_FROM);
+    
     const data = await req.json();
     const { name, email, projectName, projectType, budget, timeline, description, source } = data;
 
