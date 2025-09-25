@@ -412,3 +412,150 @@ select:focus {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Card alignment and consistency fixes */
+.card-title {
+  word-break: keep-all;
+  hyphens: none;
+  line-height: 1.3;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure consistent card heights in grids */
+.grid-cards {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.grid-cards > * {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Consistent spacing for all card types */
+.card-spacing {
+  padding: 1.5rem;
+}
+
+.card-spacing-sm {
+  padding: 1rem;
+}
+
+/* Responsive card improvements */
+@media (max-width: 1024px) {
+  .card-spacing {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-spacing {
+    padding: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+  
+  /* Ensure cards stack properly on mobile */
+  .grid-cards {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-spacing {
+    padding: 0.875rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  /* Adjust icon sizes for mobile */
+  .card-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-spacing {
+    padding: 0.75rem;
+  }
+  
+  .card-title {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+  
+  /* Smaller gaps on very small screens */
+  .grid-cards {
+    gap: 0.75rem;
+  }
+}
+
+/* Consistent list styling */
+.card-list {
+  margin: 0;
+  padding: 0;
+}
+
+.card-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.card-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Badge consistency */
+.card-badge {
+  display: inline-block;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+/* Consistent card visual styling */
+.card-consistent {
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.card-consistent:hover {
+  border-color: #fecaca;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Ensure all cards have consistent height behavior */
+.card-height-fix {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-height-fix .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
