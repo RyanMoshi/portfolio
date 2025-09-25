@@ -32,88 +32,195 @@ async function sendEmail(to: string, subject: string, html: string) {
   await transporter.sendMail({ from: FROM_EMAIL, to, subject, html });
 }
 
-function renderUserTemplate(name: string) {
-  const logo = `${SITE_URL}/images/ryan-profile-red.jpg`;
+function renderUserTemplate(name: string, projectData: any) {
+  const profileImage = `${SITE_URL}/images/ryan-profile-red.jpg`;
+  const retrosoftLogo = `${SITE_URL}/images/retrosoft-logo.png`;
+  const retroworldLogo = `${SITE_URL}/images/retroworld-logo.png`;
+  const dropexLogo = `${SITE_URL}/images/dropex-logo-blue.png`;
+  
   return `
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f16;color:#fff;padding:24px;font-family:Inter,system-ui,Arial,sans-serif">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#111827;border-radius:16px;overflow:hidden">
-          <tr>
-            <td style="background:#ef4444;padding:20px 24px;text-align:center">
-              <img src="${logo}" alt="Ryan Moshi" width="56" height="56" style="border-radius:12px;display:block;margin:0 auto 8px" />
-              <div style="font-size:18px;font-weight:700;letter-spacing:.3px;margin:0;color:#fff">Ryan Moshi</div>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:24px 24px 8px">
-              <h1 style="margin:0 0 10px;font-size:22px;font-weight:700;letter-spacing:.3px;color:#fff">Thank you, ${name}!</h1>
-              <p style="margin:0 0 16px;opacity:.9;line-height:1.6;color:#e5e7eb">Your message has been received. I’ll get back to you shortly. In the meantime, feel free to explore recent work and capabilities.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 24px 24px;text-align:center">
-              <a href="${SITE_URL}" style="display:inline-block;background:#ef4444;color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:600">Visit Portfolio</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>`;
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Ryan Moshi</title>
+  </head>
+  <body style="margin:0;padding:0;background:#0b0f16;font-family:'Inter',system-ui,Arial,sans-serif">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f16;padding:20px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#111827;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+            
+            <!-- Header Section -->
+            <tr>
+              <td style="background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);padding:40px 30px;text-align:center;position:relative;">
+                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grain\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><circle cx=\"25\" cy=\"25\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"75\" cy=\"75\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"50\" cy=\"10\" r=\"0.5\" fill=\"%23ffffff\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grain)\"/></svg>');opacity:0.3;"></div>
+                <div style="position:relative;z-index:2;">
+                  <img src="${profileImage}" alt="Ryan Moshi" width="80" height="80" style="border-radius:50%;border:4px solid rgba(255,255,255,0.2);display:block;margin:0 auto 16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);" />
+                  <h1 style="margin:0;font-size:28px;font-weight:700;color:#fff;letter-spacing:-0.5px;text-shadow:0 2px 4px rgba(0,0,0,0.3);">Ryan Moshi</h1>
+                  <p style="margin:8px 0 0;font-size:16px;color:rgba(255,255,255,0.9);font-weight:500;">Chief Technology & Brand Strategist</p>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Main Content -->
+            <tr>
+              <td style="padding:40px 30px;">
+                <h2 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.3px;">Thank you, ${name}!</h2>
+                
+                <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#e5e7eb;">Your project inquiry has been received successfully. I'm excited to learn more about your vision and how we can bring it to life together.</p>
+                
+                ${projectData ? `
+                <div style="background:#1f2937;border-radius:12px;padding:20px;margin:24px 0;border-left:4px solid #ef4444;">
+                  <h3 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#fff;">Project Summary</h3>
+                  <div style="color:#d1d5db;font-size:14px;line-height:1.5;">
+                    <p style="margin:0 0 8px;"><strong style="color:#fff;">Project:</strong> ${projectData.projectName || 'Not specified'}</p>
+                    <p style="margin:0 0 8px;"><strong style="color:#fff;">Type:</strong> ${projectData.projectType || 'Not specified'}</p>
+                    ${projectData.budget ? `<p style="margin:0 0 8px;"><strong style="color:#fff;">Budget:</strong> ${projectData.budget}</p>` : ''}
+                    ${projectData.timeline ? `<p style="margin:0 0 8px;"><strong style="color:#fff;">Timeline:</strong> ${projectData.timeline}</p>` : ''}
+                  </div>
+                </div>
+                ` : ''}
+                
+                <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#e5e7eb;">I'll review your request carefully and get back to you within <strong style="color:#ef4444;">24-48 hours</strong> with next steps and a detailed proposal.</p>
+                
+                <!-- CTA Button -->
+                <div style="text-align:center;margin:32px 0;">
+                  <a href="https://ryanmoshiportfolio.vercel.app/" style="display:inline-block;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 8px 24px rgba(239,68,68,0.3);transition:all 0.3s ease;border:2px solid transparent;">View My Portfolio</a>
+                </div>
+                
+                <div style="background:#1f2937;border-radius:12px;padding:20px;margin:24px 0;">
+                  <h3 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#fff;">What's Next?</h3>
+                  <ul style="margin:0;padding-left:20px;color:#d1d5db;font-size:14px;line-height:1.6;">
+                    <li style="margin-bottom:8px;">I'll analyze your project requirements</li>
+                    <li style="margin-bottom:8px;">Prepare a detailed proposal with timeline and pricing</li>
+                    <li style="margin-bottom:8px;">Schedule a discovery call to discuss your vision</li>
+                    <li>Begin crafting your digital solution</li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style="background:#0f172a;padding:30px;text-align:center;">
+                <div style="margin-bottom:20px;">
+                  <h3 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#fff;">Connect With Me</h3>
+                  <div style="display:flex;justify-content:center;gap:16px;margin-bottom:20px;">
+                    <a href="https://www.linkedin.com/in/ryan-moshi" style="display:inline-block;width:40px;height:40px;background:#ef4444;border-radius:50%;text-align:center;line-height:40px;color:#fff;text-decoration:none;font-weight:bold;">in</a>
+                    <a href="https://www.instagram.com/ryan_moshi" style="display:inline-block;width:40px;height:40px;background:#ef4444;border-radius:50%;text-align:center;line-height:40px;color:#fff;text-decoration:none;font-weight:bold;">ig</a>
+                    <a href="mailto:ryanemmanuelmoshi@gmail.com" style="display:inline-block;width:40px;height:40px;background:#ef4444;border-radius:50%;text-align:center;line-height:40px;color:#fff;text-decoration:none;font-weight:bold;">@</a>
+                  </div>
+                </div>
+                
+                <!-- Company Logos -->
+                <div style="margin:20px 0;padding:20px 0;border-top:1px solid #374151;">
+                  <p style="margin:0 0 16px;font-size:14px;color:#9ca3af;font-weight:500;">My Companies</p>
+                  <div style="display:flex;justify-content:center;gap:20px;align-items:center;">
+                    <img src="${retrosoftLogo}" alt="Retrosoft" width="32" height="32" style="border-radius:6px;opacity:0.8;" />
+                    <img src="${retroworldLogo}" alt="RetroWorld Studios" width="32" height="32" style="border-radius:6px;opacity:0.8;" />
+                    <img src="${dropexLogo}" alt="DropEx Logistics" width="32" height="32" style="border-radius:6px;opacity:0.8;" />
+                  </div>
+                </div>
+                
+                <p style="margin:0;font-size:12px;color:#6b7280;line-height:1.5;">
+                  © 2025 Ryan Moshi. All rights reserved.<br>
+                  Building Brands. Engineering Solutions. Leading Innovation.
+                </p>
+              </td>
+            </tr>
+            
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>`;
 }
 
 function renderOwnerTemplate(payload: any) {
-  const entries = Object.entries(payload) as [string, string][];
-  const rows = entries
-    .map(([k, v]) => `<tr><td style="padding:6px 12px;background:#0b0f16;color:#9ca3af">${k}</td><td style="padding:6px 12px;background:#111827;color:#fff">${(v||"")
-      .toString()
-      .replace(/</g, "&lt;")}</td></tr>`) 
-    .join("");
   const logo = `${SITE_URL}/images/ryan-profile-red.jpg`;
   const retrosoft = `${SITE_URL}/images/retrosoft-logo.png`;
   const retroworld = `${SITE_URL}/images/retroworld-logo.png`;
   const dropex = `${SITE_URL}/images/dropex-logo-blue.png`;
+  
   return `
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f16;color:#fff;padding:24px;font-family:Inter,system-ui,Arial,sans-serif">
-    <tr><td align="center">
-      <table role="presentation" width="700" cellpadding="0" cellspacing="0" style="max-width:700px;background:#111827;border-radius:16px;overflow:hidden">
-        <tr>
-          <td style="background:#ef4444;padding:16px 20px;text-align:center">
-            <img src="${logo}" width="44" height="44" alt="Ryan Moshi" style="border-radius:10px;display:block;margin:0 auto 8px" />
-            <div style="font-weight:700;color:#fff;margin:0">New Contact Form Submission</div>
-          </td>
-        </tr>
-        <tr><td style="padding:16px 20px">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
-            ${rows}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Project Inquiry - Ryan Moshi</title>
+  </head>
+  <body style="margin:0;padding:0;background:#0b0f16;font-family:'Inter',system-ui,Arial,sans-serif">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f16;padding:20px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:700px;background:#111827;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);padding:30px;text-align:center;">
+                <img src="${logo}" width="60" height="60" alt="Ryan Moshi" style="border-radius:50%;border:3px solid rgba(255,255,255,0.2);display:block;margin:0 auto 12px;" />
+                <h1 style="margin:0;font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.3px;">New Project Inquiry</h1>
+                <p style="margin:8px 0 0;font-size:14px;color:rgba(255,255,255,0.9);">Portfolio Contact Form</p>
+              </td>
+            </tr>
+            
+            <!-- Content -->
+            <tr>
+              <td style="padding:30px;">
+                <div style="background:#1f2937;border-radius:12px;padding:24px;margin-bottom:20px;border-left:4px solid #ef4444;">
+                  <h2 style="margin:0 0 16px;font-size:20px;font-weight:600;color:#fff;">Project Details</h2>
+                  <div style="color:#d1d5db;font-size:14px;line-height:1.6;">
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Client Name:</strong> ${payload.name || 'Not provided'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Email:</strong> <a href="mailto:${payload.email}" style="color:#ef4444;text-decoration:none;">${payload.email || 'Not provided'}</a></p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Project Name:</strong> ${payload.projectName || 'Not specified'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Project Type:</strong> ${payload.projectType || 'Not specified'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Budget:</strong> ${payload.budget || 'Not specified'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Timeline:</strong> ${payload.timeline || 'Not specified'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Source:</strong> ${payload.source || 'Not specified'}</p>
+                    <p style="margin:0 0 12px;"><strong style="color:#fff;">Submitted:</strong> ${payload.submittedAt || 'Just now'}</p>
+                  </div>
+                </div>
+                
+                <div style="background:#1f2937;border-radius:12px;padding:24px;margin-bottom:20px;">
+                  <h3 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#fff;">Project Description</h3>
+                  <p style="margin:0;color:#d1d5db;font-size:14px;line-height:1.6;white-space:pre-wrap;">${(payload.description || 'No description provided').replace(/</g, "&lt;")}</p>
+                </div>
+                
+                <div style="text-align:center;margin:24px 0;">
+                  <a href="mailto:${payload.email}?subject=Re: ${payload.projectName || 'Your Project Inquiry'}&body=Hi ${payload.name},%0D%0A%0D%0AThank you for reaching out about your project. I'd love to discuss this further with you.%0D%0A%0D%0ABest regards,%0D%0ARyan Moshi" style="display:inline-block;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px;">Reply to Client</a>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style="background:#0f172a;padding:20px;text-align:center;">
+                <div style="margin-bottom:16px;">
+                  <p style="margin:0 0 12px;font-size:14px;color:#9ca3af;font-weight:500;">Portfolio Contact System</p>
+                  <div style="display:flex;justify-content:center;gap:12px;align-items:center;">
+                    <img src="${retrosoft}" width="24" height="24" alt="Retrosoft" style="border-radius:4px;opacity:0.8;" />
+                    <img src="${retroworld}" width="24" height="24" alt="RetroWorld Studios" style="border-radius:4px;opacity:0.8;" />
+                    <img src="${dropex}" width="24" height="24" alt="DropEx Logistics" style="border-radius:4px;opacity:0.8;" />
+                  </div>
+                </div>
+                <p style="margin:0;font-size:12px;color:#6b7280;">© 2025 Ryan Moshi Portfolio System</p>
+              </td>
+            </tr>
+            
           </table>
-        </td></tr>
-        <tr>
-          <td style="padding:12px 20px 20px;text-align:center;opacity:.9">
-            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto">
-              <tr>
-                <td style="padding:0 6px"><img src="${retrosoft}" width="28" height="28" alt="Retrosoft" style="border-radius:6px;display:block" /></td>
-                <td style="padding:0 6px"><img src="${retroworld}" width="28" height="28" alt="RetroWorld Studios" style="border-radius:6px;display:block" /></td>
-                <td style="padding:0 6px"><img src="${dropex}" width="28" height="28" alt="DropEx Logistics" style="border-radius:6px;display:block" /></td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>`;
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>`;
 }
 
 export async function POST(req: Request) {
   try {
-    // Debug environment variables
-    console.log("Environment Variables Debug:");
-    console.log("SMTP_USER:", process.env.SMTP_USER ? "Set" : "Missing");
-    console.log("SMTP_PASS:", process.env.SMTP_PASS ? "Set" : "Missing");
-    console.log("SMTP_HOST:", process.env.SMTP_HOST);
-    console.log("SMTP_PORT:", process.env.SMTP_PORT);
-    console.log("MAIL_FROM:", process.env.MAIL_FROM);
-    
     const data = await req.json();
     const { name, email, projectName, projectType, budget, timeline, description, source } = data;
 
@@ -146,7 +253,7 @@ export async function POST(req: Request) {
     };
 
     await Promise.all([
-      sendEmail(email, "Thanks for reaching out to Ryan Moshi", renderUserTemplate(name)),
+      sendEmail(email, "Thanks for reaching out to Ryan Moshi", renderUserTemplate(name, enhancedData)),
       sendEmail(NOTIFY_EMAIL, "New Project Inquiry - Portfolio Contact", renderOwnerTemplate(enhancedData)),
     ]);
 
