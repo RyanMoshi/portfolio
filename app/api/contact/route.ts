@@ -13,13 +13,21 @@ const FROM_EMAIL = process.env.MAIL_FROM || "Ryan Moshi <noreply@your-domain.com
 
 async function sendEmail(to: string, subject: string, html: string) {
   if (!SMTP_USER || !SMTP_PASS) {
+    console.error("SMTP Configuration Check:");
+    console.error("SMTP_USER:", SMTP_USER ? "Set" : "Missing");
+    console.error("SMTP_PASS:", SMTP_PASS ? "Set" : "Missing");
+    console.error("SMTP_HOST:", SMTP_HOST);
+    console.error("SMTP_PORT:", SMTP_PORT);
     throw new Error("SMTP not configured. Set SMTP_USER and SMTP_PASS in .env.local");
   }
   const transporter = nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
+    secure: SMTP_PORT === 465, // true for 465, false for other ports
     auth: { user: SMTP_USER, pass: SMTP_PASS },
+    tls: {
+      rejectUnauthorized: false // Allow self-signed certificates
+    }
   });
   await transporter.sendMail({ from: FROM_EMAIL, to, subject, html });
 }
